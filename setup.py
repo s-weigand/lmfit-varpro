@@ -10,7 +10,7 @@ setup(
                     YamiNoKeshin@gmail.com,
                     joern.weissenborn@gmail.com""",
     license='GPLv3',
-    packages=['lmfit-varpro'],
+    packages=['lmfit_varpro'],
     install_requires=[
         'numpy',
         'lmfit',
