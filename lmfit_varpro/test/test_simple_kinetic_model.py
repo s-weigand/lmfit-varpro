@@ -1,7 +1,5 @@
 from unittest import TestCase
-from glotaran_core.fitting.variable_projection import (
-    SeperableModel,
-)
+from lmfit_varpro import SeperableModel
 from lmfit import Parameters
 import numpy as np
 
@@ -13,7 +11,7 @@ class TestSimpleKinetic(TestCase):
 
     def test_one_compartment_decay(self):
 
-        class OneComparmentDecay(SeperableModel):
+        class OneCompartmentDecay(SeperableModel):
 
             def data(self, **kwargs):
                 data = (kwargs['data'],)
@@ -32,7 +30,7 @@ class TestSimpleKinetic(TestCase):
 
                 return E
 
-        model = OneComparmentDecay()
+        model = OneCompartmentDecay()
         times = np.asarray(np.arange(0, 1000, 1.5))
 
         params = [101e-4]
