@@ -10,11 +10,11 @@ def qr_residual(A, B):
     #  print("QR")
     #  print(B[:6])
 
-    B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
-                            overwrite_c=1)
+    # B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
+    #                         overwrite_c=1)
 
-    #  B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
-    #                          overwrite_c=0)
+    B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
+                              overwrite_c=0)
 
     for i in range(A.shape[1]):
         B[i] = 0
@@ -23,7 +23,7 @@ def qr_residual(A, B):
     #  print(B[:6])
     # Kaufman Q2 step 5
 
-    lapack.dormqr("L", "N", qr, tau, B, max(1, A.shape[1]),
+    B, _, _ = lapack.dormqr("L", "N", qr, tau, B, max(1, A.shape[1]),
                             overwrite_c=1)
     #  print("QR2")
     #  print(B[:6])
