@@ -1,9 +1,10 @@
+import warnings
 import numpy as np
 from .result import SeperableModelResult
 from .qr_decomposition import qr_coefficents
 
 
-class SeperableModel(object):
+class SeparableModel(object):
 
     def c_matrix(self, parameter, *args, **kwargs):
         raise NotImplementedError
@@ -23,6 +24,13 @@ class SeperableModel(object):
         for i in range(e.shape[0]):
             res[:, i] = np.dot(c[i, :, :], np.transpose(e[i, :]))
         if noise:
+            if "noise_seed" in kwargs:
+                noise_seed = kwargs["noise_seed"]
+                if ~isinstance(noise_seed, int):
+                    warnings.warn("Warning noise_seed should be integer, {} reduced to {}".format(noise_seed,
+                                                                                                  int(noise_seed)))
+                    noise_seed = int(noise_seed)
+                np.random.seed(noise_seed)
             std_dev = kwargs["noise_std_dev"] if "noise_std_dev" in kwargs \
                 else 1.0
             res = np.random.normal(res, std_dev)

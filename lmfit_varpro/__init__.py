@@ -1,5 +1,5 @@
-from . import seperable_model, result
+from . import separable_model, result
 
-SeperableModel = seperable_model.SeperableModel
+SeparableModel = separable_model.SeparableModel
 
-SeperableModelResult = result.SeperableModelResult
+SeparableModelResult = result.SeperableModelResult

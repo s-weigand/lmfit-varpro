@@ -1,5 +1,5 @@
 from unittest import TestCase
-from lmfit_varpro import SeperableModel
+from lmfit_varpro import SeparableModel
 from lmfit import Parameters
 import numpy as np
 
@@ -11,7 +11,7 @@ class TestSimpleKinetic(TestCase):
 
     def test_one_compartment_decay(self):
 
-        class OneCompartmentDecay(SeperableModel):
+        class OneCompartmentDecay(SeparableModel):
 
             def data(self, **kwargs):
                 data = (kwargs['data'],)
@@ -54,7 +54,7 @@ class TestSimpleKinetic(TestCase):
 
     def test_two_compartment_decay(self):
 
-        class TwoComparmentDecay(SeperableModel):
+        class TwoComparmentDecay(SeparableModel):
 
             def data(self, **kwargs):
                 data = (kwargs['data'],)
@@ -102,7 +102,7 @@ class TestSimpleKinetic(TestCase):
 
     def test_multi_compartment_multi_channel_decay(self):
 
-        class MultiChannelMultiCompartmentDecay(SeperableModel):
+        class MultiChannelMultiCompartmentDecay(SeparableModel):
 
             wavenum = np.asarray(np.arange(12820, 15120, 4.6))
 
