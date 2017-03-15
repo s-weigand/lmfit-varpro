@@ -3,23 +3,21 @@ import numpy as np
 from .qr_decomposition import qr_residual
 
 
-class SeperableModelResult(Minimizer):
-    _residual_buffer = None
+class SeparableModelResult(Minimizer):
 
     def __init__(self, model, initial_parameter, *args, **kwargs):
         self.model = model
-        super(SeperableModelResult, self).__init__(self._residual,
+        self._residual_buffer = None
+        super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
                                                    fcn_args=args,
                                                    fcn_kws=kwargs)
 
-    def fit(self, initial_parameter, ftol=1e-10, gtol=1e-10, *args, **kwargs):
+    def fit(self, *args, **kwargs):
         verbose = kwargs['verbose'] if 'verbose' in kwargs else 2
-        ftol = 1e-10
-        gtol = 1e-10
         res = self.minimize(method='least_squares',
-                            ftol=ftol,
-                            gtol=gtol,
+                            ftol=kwargs.get('ftol',1e-10),
+                            gtol=kwargs.get('gtol',1e-10),
                             verbose=verbose)
 
         self.best_fit_parameter = res.params

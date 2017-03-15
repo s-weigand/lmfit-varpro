@@ -1,6 +1,6 @@
 import warnings
 import numpy as np
-from .result import SeperableModelResult
+from .result import SeparableModelResult
 from .qr_decomposition import qr_coefficents
 
 
@@ -20,15 +20,14 @@ class SeparableModel(object):
         c = self.c_matrix(parameter, *args, **kwargs)
         noise = kwargs["noise"] if "noise" in kwargs else False
         res = np.empty((c.shape[1], e.shape[0]))
-        print(res.shape)
         for i in range(e.shape[0]):
             res[:, i] = np.dot(c[i, :, :], np.transpose(e[i, :]))
         if noise:
             if "noise_seed" in kwargs:
                 noise_seed = kwargs["noise_seed"]
-                if ~isinstance(noise_seed, int):
-                    warnings.warn("Warning noise_seed should be integer, {} reduced to {}".format(noise_seed,
-                                                                                                  int(noise_seed)))
+                if not isinstance(noise_seed, int):
+                    warnings.warn("Warning noise_seed should be integer, seed value of {} "
+                                  "reduced to {}".format(noise_seed, int(noise_seed)))
                     noise_seed = int(noise_seed)
                 np.random.seed(noise_seed)
             std_dev = kwargs["noise_std_dev"] if "noise_std_dev" in kwargs \
@@ -37,7 +36,7 @@ class SeparableModel(object):
         return res
 
     def fit(self, initial_parameter, *args, **kwargs):
-        result = SeperableModelResult(self, initial_parameter, *args,
+        result = SeparableModelResult(self, initial_parameter, *args,
                                       **kwargs)
         result.fit(initial_parameter, *args, **kwargs)
         return result
