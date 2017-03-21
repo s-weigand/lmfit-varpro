@@ -19,9 +19,9 @@ class SeparableModel(object):
         e = self.e_matrix(**kwargs)
         c = self.c_matrix(parameter, *args, **kwargs)
         noise = kwargs["noise"] if "noise" in kwargs else False
-        res = np.empty((c.shape[1], e.shape[0]))
+        res = np.empty((c[0].shape[0], e.shape[0]))
         for i in range(e.shape[0]):
-            res[:, i] = np.dot(c[i, :, :], np.transpose(e[i, :]))
+            res[:, i] = np.dot(c[i], np.transpose(e[i, :]))
         if noise:
             if "noise_seed" in kwargs:
                 noise_seed = kwargs["noise_seed"]
