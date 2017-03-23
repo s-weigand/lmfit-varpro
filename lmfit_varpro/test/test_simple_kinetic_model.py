@@ -95,7 +95,6 @@ class TestSimpleKinetic(TestCase):
                                .value,
                                1e-6)
         amps = result.e_matrix(times, **{"data": data})[:, 0]
-        print(amps)
         want = [1.0, 2.0]
         for i in range(len(want)):
             self.assertEpsilon(amps[i], want[i], 1e-6)
@@ -107,14 +106,14 @@ class TestSimpleKinetic(TestCase):
             wavenum = np.asarray(np.arange(12820, 15120, 4.6))
 
             def data(self, **kwargs):
-                data = (kwargs['data'],)
-                return data
+                data = (kwargs['data'])
+                return data.T
 
             def c_matrix(self, parameter, times, **kwargs):
                 kinpar = np.asarray([parameter["p{}".format(i)] for i in
                                      range(len((parameter)))])
                 c = np.exp(np.outer(np.asarray(times), -kinpar))
-                return np.asarray([c for _ in range(self.wavenum.shape[0])])
+                return [c for _ in range(self.wavenum.shape[0])]
 
             def e_matrix(self):
                 location = np.asarray(
@@ -158,9 +157,3 @@ class TestSimpleKinetic(TestCase):
             self.assertEpsilon(wanted_params[i],
                                result.best_fit_parameter["p{}".format(i)],
                                1e-6)
-        #  amps = result.e_matrix(*times, **{"data": data}).flatten()
-        #  print(amps)
-        #  want = model.e_matrix().flatten()
-        #  print(want)
-        #  for i in range(len(want)):
-        #      self.assertEpsilon(amps[i], want[i], 1e-6)

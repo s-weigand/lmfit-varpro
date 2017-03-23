@@ -26,8 +26,9 @@ class SeparableModel(object):
             if "noise_seed" in kwargs:
                 noise_seed = kwargs["noise_seed"]
                 if not isinstance(noise_seed, int):
-                    warnings.warn("Warning noise_seed should be integer, seed value of {} "
-                                  "reduced to {}".format(noise_seed, int(noise_seed)))
+                    warnings.warn("Warning noise_seed should be integer, seed"
+                                  " value of {} reduced to {}"
+                                  .format(noise_seed, int(noise_seed)))
                     noise_seed = int(noise_seed)
                 np.random.seed(noise_seed)
             std_dev = kwargs["noise_std_dev"] if "noise_std_dev" in kwargs \

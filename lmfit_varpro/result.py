@@ -16,8 +16,8 @@ class SeparableModelResult(Minimizer):
     def fit(self, *args, **kwargs):
         verbose = kwargs['verbose'] if 'verbose' in kwargs else 2
         res = self.minimize(method='least_squares',
-                            ftol=kwargs.get('ftol',1e-10),
-                            gtol=kwargs.get('gtol',1e-10),
+                            ftol=kwargs.get('ftol', 1e-10),
+                            gtol=kwargs.get('gtol', 1e-10),
                             verbose=verbose)
 
         self.best_fit_parameter = res.params
@@ -51,45 +51,16 @@ class SeparableModelResult(Minimizer):
     def _residual(self, parameter, *args, **kwargs):
 
         data_group = self.model.data(**kwargs)
-        c_matrix_group = self.model.c_matrix(parameter.valuesdict(), *args, **kwargs)
-        #  res = np.empty(data.shape, dtype=np.float64)
-        #  if self._residual_buffer is None:
-        #      self._residual_buffer = np.empty(data.shape, dtype=np.float64)
-
-        #  print(parameter['p1'])
-        #  print(self._residual_buffer.shape)
-        #  print('bef')
-        #  print(c_matrix.shape)
-        #  print('befor copy')
-        #  print(self._residual_buffer.flatten()[:12])
-        #  np.copyto(self._residual_buffer, data)
-        #  print('after copy')
-        #  print(self._residual_buffer.flatten()[:12])
+        c_matrix_group = self.model.c_matrix(parameter.valuesdict(),
+                                             *args, **kwargs)
         residuals = [self._calculate_residual(data, c_mat)
                      for data, c_mat in iter(data_group, c_matrix_group)]
 
-            #  b = self._residual_buffer[:, i]
-            #  print('go')
-            #  print(i)
-            #  print(self._residual_buffer[:, i].shape)
-            #  b = data[:, i]
-            #  #  print('bevor')
-            #  #  print(self._residual_buffer[:, i][:6])
-            #  c = c_matrix[i, :, :]
-            #  #  qr_residual(c, self._residual_buffer[:, i])
-            #  qr = qr_residual(c_mat, data)
-            #  self._residual_buffer[:, i] = qr
-            #  print('danach')
-            #  print(self._residual_buffer[:, i][:6])
-            #  res[:, i] = qr
-
-        #  print('final')
-        #  print(self._residual_buffer.flatten()[:12])
         return np.concatenate(residuals)
-        #  return res.flatten()
 
     def _calculate_residual(self, data, c_matrix):
         return qr_residual(c_matrix, data).flatten()
+
 
 def iter(data, c_matrix):
     for i in range(len(data)):
