@@ -55,7 +55,6 @@ class SeparableModelResult(Minimizer):
                                              *args, **kwargs)
         residuals = [self._calculate_residual(data, c_mat)
                      for data, c_mat in iter(data_group, c_matrix_group)]
-
         return np.concatenate(residuals)
 
     def _calculate_residual(self, data, c_matrix):

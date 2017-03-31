@@ -16,12 +16,14 @@ class SeparableModel(object):
         raise NotImplementedError
 
     def eval(self, parameter, *args, **kwargs):
-        e = self.e_matrix(**kwargs)
+        e = self.e_matrix(parameter, **kwargs)
         c = self.c_matrix(parameter, *args, **kwargs)
         noise = kwargs["noise"] if "noise" in kwargs else False
-        res = np.empty((c[0].shape[0], e.shape[0]))
-        for i in range(e.shape[0]):
-            res[:, i] = np.dot(c[i], np.transpose(e[i, :]))
+        res = np.empty((len(c), len(e)), dtype=np.float64)
+
+        for x, t in iter_c_and_e(c, e):
+            res[x, t] = np.dot(c[x][t, :], e[t][x, :].T)
+
         if noise:
             if "noise_seed" in kwargs:
                 noise_seed = kwargs["noise_seed"]
@@ -53,3 +55,9 @@ class SeparableModel(object):
             qr = qr_coefficents(c_matrix[i, :, :], b)
             e_matrix[:, i] = qr[:c_matrix.shape[2]]
         return e_matrix
+
+
+def iter_c_and_e(c, e):
+    for i in range(len(c)):
+        for j in range(len(e)):
+            yield i, j
