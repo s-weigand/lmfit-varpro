@@ -51,7 +51,7 @@ class SeparableModelResult(Minimizer):
     def _residual(self, parameter, *args, **kwargs):
 
         data_group = self.model.data(**kwargs)
-        c_matrix_group = self.model.c_matrix(parameter.valuesdict(),
+        c_matrix_group = self.model.c_matrix(parameter,
                                              *args, **kwargs)
         residuals = [self._calculate_residual(data, c_mat)
                      for data, c_mat in iter(data_group, c_matrix_group)]

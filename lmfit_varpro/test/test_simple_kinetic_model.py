@@ -7,7 +7,7 @@ import numpy as np
 class TestSimpleKinetic(TestCase):
 
     def assertEpsilon(self, number, value, epsilon):
-        self.assertTrue(abs(number - value) < epsilon)
+        self.assertTrue(abs(number - value) < epsilon, msg='wrong number')
 
     def test_one_compartment_decay(self):
 
@@ -17,18 +17,19 @@ class TestSimpleKinetic(TestCase):
                 data = (kwargs['data'],)
                 return data
 
-            def c_matrix(self, parameter, times, **kwargs):
+            def c_matrix(self, parameter, *args, **kwargs):
+                parameter = parameter.valuesdict()
                 kinpar = np.asarray([parameter["p0"]])
-                c = np.exp(np.outer(np.asarray(times), -kinpar))
-                return np.asarray([c])
+                c = np.exp(np.outer(np.asarray(kwargs['times']), -kinpar))
+                return [c]
 
-            def e_matrix(self, **kwargs):
+            def e_matrix(self, parameter, **kwargs):
                 # E Matrix => channels X compartments
                 E = np.empty((1, 1), dtype=np.float64, order="F")
 
                 E[0, 0] = 1
 
-                return E
+                return [E]
 
         model = OneCompartmentDecay()
         times = np.asarray(np.arange(0, 1000, 1.5))
@@ -38,12 +39,12 @@ class TestSimpleKinetic(TestCase):
         real_params = Parameters()
         for i in range(len(params)):
             real_params.add("p{}".format(i), params[i])
-        data = model.eval(real_params, times)
+        data = model.eval(real_params, **{"times": times})
 
         initial_parameter = Parameters()
         initial_parameter.add("p0", 100e-5)
 
-        result = model.fit(initial_parameter, times, **{"data": data})
+        result = model.fit(initial_parameter, **{"times": times, "data": data})
         for i in range(len(params)):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
