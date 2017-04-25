@@ -50,12 +50,18 @@ class SeparableModelResult(Minimizer):
     # @profile
     def _residual(self, parameter, *args, **kwargs):
 
+        residuals = np.asarray(list(self._all_residuals(parameter, *args,
+                                                        **kwargs))).flatten()
+        return residuals
+
+    def _all_residuals(self, parameter, *args, **kwargs):
+
         data_group = self.model.data(**kwargs)
         c_matrix_group = self.model.c_matrix(parameter,
                                              *args, **kwargs)
-        residuals = [self._calculate_residual(data, c_mat)
-                     for data, c_mat in iter(data_group, c_matrix_group)]
-        return np.concatenate(residuals)
+        for data, c_mat in iter(data_group, c_matrix_group):
+            res = self._calculate_residual(data, c_mat)
+            yield(res)
 
     def _calculate_residual(self, data, c_matrix):
         return qr_residual(c_matrix, data).flatten()
