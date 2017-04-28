@@ -38,9 +38,9 @@ class SeparableModelResult(Minimizer):
         return res
 
     def final_residual(self, *args, **kwargs):
-        data = self.model.data(**kwargs)[0]
-        reconstructed = self.eval(*args, **kwargs)
-        return data-reconstructed
+        return np.asarray([r for r in
+                           self._all_residuals(self.best_fit_parameter, *args,
+                                               **kwargs)])
 
     def final_residual_svd(self, *args, **kwargs):
         residual = self.final_residual(*args, **kwargs)
