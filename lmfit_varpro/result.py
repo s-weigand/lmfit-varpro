@@ -1,5 +1,7 @@
 from lmfit import Minimizer
 import numpy as np
+
+from .util import dot
 from .qr_decomposition import qr_residual
 
 
@@ -7,7 +9,6 @@ class SeparableModelResult(Minimizer):
 
     def __init__(self, model, initial_parameter, *args, **kwargs):
         self.model = model
-        self._residual_buffer = None
         super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
                                                    fcn_args=args,
@@ -22,9 +23,9 @@ class SeparableModelResult(Minimizer):
 
         self.best_fit_parameter = res.params
 
-    def e_matrix(self, *args, **kwargs):
+    def e_matrix(self, data, *args, **kwargs):
         return self.model.retrieve_e_matrix(self.best_fit_parameter,
-                                            *args, **kwargs)
+                                            data, *args, **kwargs)
 
     def c_matrix(self, *args, **kwargs):
         return self.model.c_matrix(self.best_fit_parameter, *args, **kwargs)
@@ -32,10 +33,7 @@ class SeparableModelResult(Minimizer):
     def eval(self, *args, **kwargs):
         e = self.e_matrix(*args, **kwargs)
         c = self.c_matrix(*args, **kwargs)
-        res = np.empty((c.shape[1], e.shape[1]))
-        for i in range(e.shape[1]):
-            res[:, i] = np.dot(c[i, :, :], e[:, i])
-        return res
+        return dot(e, c)
 
     def final_residual(self, *args, **kwargs):
         return np.asarray([r for r in
@@ -64,7 +62,7 @@ class SeparableModelResult(Minimizer):
             yield(res)
 
     def _calculate_residual(self, data, c_matrix):
-        return qr_residual(c_matrix, data).flatten()
+        return qr_residual(c_matrix, data)
 
 
 def iter(data, c_matrix):

@@ -7,28 +7,17 @@ def qr_residual(A, B):
     qr, tau, _, _ = lapack.dgeqrf(A)
 
     # Kaufman Q2 step 4
-    #  print("QR")
-    #  print(B[:6])
-
-    # B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
-    #                         overwrite_c=1)
 
     B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]),
-                              overwrite_c=0)
+                            overwrite_c=0)
 
     for i in range(A.shape[1]):
         B[i] = 0
 
-    #  print("QR1")
-    #  print(B[:6])
     # Kaufman Q2 step 5
 
     B, _, _ = lapack.dormqr("L", "N", qr, tau, B, max(1, A.shape[1]),
                             overwrite_c=1)
-    #  print("QR2")
-    #  print(B[:6])
-    #  print(B[:6])
-
     return B
 
 
@@ -42,17 +31,7 @@ def qr_coefficents(A, B):
 
     B, _, _ = lapack.dormqr("L", "T", qr, tau, B, max(1, A.shape[1]))
 
-    # Q, _, _ = lapack.dorgqr(qr, tau)
-
-    #  for i in range(A.shape[1]):
-    #      B[i] = 0
-    # Kaufman Q2 step 5
-
-    #  B, _, _ = lapack.dormqr("L", "N", qr, tau, B, max(1, A.shape[1]),
-    #                          overwrite_c=0)
-
     # Kaufman Q2 step 6
+
     P, _ = lapack.dtrtrs(qr, B)
-    # Q.shape = (Q.shape[0],)
-    # print(qr.shape, B.shape)
     return P
