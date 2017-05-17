@@ -48,8 +48,8 @@ class SeparableModelResult(Minimizer):
     # @profile
     def _residual(self, parameter, *args, **kwargs):
 
-        residuals = np.asarray(list(self._all_residuals(parameter, *args,
-                                                        **kwargs))).flatten()
+        residuals = np.concatenate(list(self._all_residuals(parameter, *args,
+                                                            **kwargs)))
         return residuals
 
     def _all_residuals(self, parameter, *args, **kwargs):
