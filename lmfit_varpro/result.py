@@ -7,8 +7,10 @@ from .qr_decomposition import qr_residual
 
 class SeparableModelResult(Minimizer):
 
-    def __init__(self, model, initial_parameter, *args, **kwargs):
+    def __init__(self, model, initial_parameter,
+                 equality_constraints=[], *args, **kwargs):
         self.model = model
+        self.equality_constraints = equality_constraints
         super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
                                                    fcn_args=args,
@@ -60,6 +62,10 @@ class SeparableModelResult(Minimizer):
         for data, c_mat in iter(data_group, c_matrix_group):
             res = self._calculate_residual(data, c_mat)
             yield(res)
+        if len(self.equality_constraints) is not 0:
+            e_matrix = self.model.retrieve_e_matrix(parameter, data)
+            for constraint in self.equality_constraints:
+                yield constraint.calculate(e_matrix, parameter)
 
     def _calculate_residual(self, data, c_matrix):
         return qr_residual(c_matrix, data)

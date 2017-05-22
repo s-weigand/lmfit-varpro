@@ -37,22 +37,28 @@ class SeparableModel(object):
             res = np.random.normal(res, std_dev)
         return res
 
-    def fit(self, initial_parameter, *args, **kwargs):
-        result = SeparableModelResult(self, initial_parameter, *args,
-                                      **kwargs)
+    def fit(self, initial_parameter, constraints, *args, **kwargs):
+        result = SeparableModelResult(self, initial_parameter,
+                                      equality_constraints=constraints,
+                                      *args, **kwargs)
         result.fit(initial_parameter, *args, **kwargs)
         return result
 
     def retrieve_e_matrix(self, parameter, data, *args, **kwargs):
         c_matrix = self.c_matrix(parameter, *args, **kwargs)
 
+        islist = isinstance(data, list)
+
         dim0 = len(c_matrix)
         dim1 = c_matrix[0].shape[1]
 
-        e = np.empty((dim0, dim1), np.float64)
-        for i in range(data.shape[0]):
+        e = [] if islist else np.empty((dim0, dim1), np.float64)
+        for i in range(dim0):
             c = c_matrix[i]
-            d = data[i, :]
-            e[i, :] = qr_coefficents(c, d)[:dim1]
+            d = data[i] if islist else data[i, :]
+            if islist:
+                e.append(qr_coefficents(c, d))
+            else:
+                e[i, :] = qr_coefficents(c, d)[:dim1]
 
         return e
