@@ -14,7 +14,7 @@ class TestSimpleKinetic(TestCase):
         class OneCompartmentDecay(SeparableModel):
 
             def data(self, **kwargs):
-                data = (kwargs['data'],)
+                data = [kwargs['data'][0, :]]
                 return data
 
             def c_matrix(self, parameter, *args, **kwargs):
@@ -24,12 +24,7 @@ class TestSimpleKinetic(TestCase):
                 return [c]
 
             def e_matrix(self, parameter, **kwargs):
-                # E Matrix => channels X compartments
-                E = np.empty((1, 1), dtype=np.float64, order="F")
-
-                E[0, 0] = 1
-
-                return [E]
+                return np.asarray([[1.0]])
 
         model = OneCompartmentDecay()
         times = np.asarray(np.arange(0, 1000, 1.5))
@@ -49,7 +44,7 @@ class TestSimpleKinetic(TestCase):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
                                .value, 1e-6)
-        amps = result.e_matrix(times, **{"data": data})
+        amps = result.e_matrix(data, **{"times": times})
         print(amps)
         self.assertEpsilon(amps, [1.0], 1e-6)
 
@@ -58,21 +53,16 @@ class TestSimpleKinetic(TestCase):
         class TwoComparmentDecay(SeparableModel):
 
             def data(self, **kwargs):
-                data = (kwargs['data'],)
+                data = [kwargs['data'][0, :]]
                 return data
 
-            def c_matrix(self, parameter, times, **kwargs):
+            def c_matrix(self, parameter, **kwargs):
                 kinpar = np.asarray([parameter["p0"], parameter["p1"]])
-                c = np.exp(np.outer(np.asarray(times), -kinpar))
-                return np.asarray([c])
+                c = np.exp(np.outer(kwargs['times'], -kinpar))
+                return [c]
 
-            def e_matrix(self):
-                # E Matrix => channels X compartments
-                E = np.empty((1, 2), dtype=np.float64, order="F")
-
-                E[0, 0] = 1
-                E[0, 1] = 2
-                return E
+            def e_matrix(self, parameter, **kwargs):
+                return np.asarray([[1.0, 2.0]])
 
         model = TwoComparmentDecay()
         times = np.asarray(np.arange(0, 1500, 1.5))
@@ -83,19 +73,20 @@ class TestSimpleKinetic(TestCase):
         for i in range(len(params)):
             real_params.add("p{}".format(i), params[i])
 
-        data = model.eval(real_params.valuesdict(), times)
+        data = model.eval(real_params, **{"times": times})
 
         initial_parameter = Parameters()
         initial_parameter.add("p0", 100e-5)
         initial_parameter.add("p1", 200e-6)
 
-        result = model.fit(initial_parameter, times, **{"data": data})
+        result = model.fit(initial_parameter, **{"times": times, "data": data})
         for i in range(len(params)):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
                                .value,
                                1e-6)
-        amps = result.e_matrix(times, **{"data": data})[:, 0]
+        amps = result.e_matrix(data, **{"times": times})[0]
+        print(amps)
         want = [1.0, 2.0]
         for i in range(len(want)):
             self.assertEpsilon(amps[i], want[i], 1e-6)
@@ -107,22 +98,23 @@ class TestSimpleKinetic(TestCase):
             wavenum = np.asarray(np.arange(12820, 15120, 4.6))
 
             def data(self, **kwargs):
-                data = (kwargs['data'])
-                return data.T
+                data = [kwargs['data'][i, :] for i in
+                        range(self.wavenum.shape[0])]
+                return data
 
-            def c_matrix(self, parameter, times, **kwargs):
+            def c_matrix(self, parameter, **kwargs):
                 kinpar = np.asarray([parameter["p{}".format(i)] for i in
                                      range(len((parameter)))])
-                c = np.exp(np.outer(np.asarray(times), -kinpar))
+                c = np.exp(np.outer(kwargs['times'], -kinpar))
                 return [c for _ in range(self.wavenum.shape[0])]
 
-            def e_matrix(self):
+            def e_matrix(self, parameter, **kwargs):
                 location = np.asarray(
                     [14705, 13513, 14492, 14388, 14184, 13986])
                 delta = np.asarray([400, 1000, 300, 200, 350, 330])
                 amp = np.asarray([1, 0.1, 10, 100, 1000, 10000])
 
-                E = np.empty((self.wavenum.size, location.size),
+                E = np.empty((self.wavenum.shape[0], location.shape[0]),
                              dtype=np.float64,
                              order="F")
 
@@ -132,7 +124,6 @@ class TestSimpleKinetic(TestCase):
                             2 * (self.wavenum - location[i])/delta[i]
                         )
                     )
-
                 return E
 
         model = MultiChannelMultiCompartmentDecay()
@@ -144,14 +135,14 @@ class TestSimpleKinetic(TestCase):
         for i in range(len(rparams)):
             real_params.add("p{}".format(i), rparams[i])
 
-        data = model.eval(real_params.valuesdict(), times)
+        data = model.eval(real_params, **{"times": times})
 
         params = [.005, 0.003, 0.00022, 0.0300, 0.000888]
         initial_parameter = Parameters()
         for i in range(len(params)):
             initial_parameter.add("p{}".format(i), params[i])
 
-        result = model.fit(initial_parameter, times, **{"data": data})
+        result = model.fit(initial_parameter, **{"times": times, "data": data})
 
         wanted_params = [.006667, 0.00333, 0.00035, 0.0303, 0.000909]
         for i in range(len(wanted_params)):
