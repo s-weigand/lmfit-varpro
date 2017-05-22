@@ -63,8 +63,14 @@ class SeparableModelResult(Minimizer):
             res = self._calculate_residual(data, c_mat)
             yield(res)
         if len(self.equality_constraints) is not 0:
-            e_matrix = self.model.retrieve_e_matrix(parameter, data)
             for constraint in self.equality_constraints:
+                emin = constraint.erange[0]
+                emax = constraint.crange[1]
+                cmin = constraint.crange[0]
+                cmax = constraint.erange[1]
+                c = [c[cmin:cmax, :] for c in c_matrix_group if emin <=
+                     c_matrix_group.index(c) <= emax]
+                e_matrix = self.model.retrieve_e_matrix_for_c(c, data)
                 yield constraint.calculate(e_matrix, parameter)
 
     def _calculate_residual(self, data, c_matrix):

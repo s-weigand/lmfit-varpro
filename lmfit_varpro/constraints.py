@@ -9,7 +9,7 @@ class CompartmentEqualityConstraint(object):
 
         penalty = weight * (parameter * sum(c[range, i]) - c[range, j])
     """
-    def __init__(self, weight, i, j, parameter, range):
+    def __init__(self, weight, i, j, parameter, erange, crange):
         self.weight = weight
         """Weight factor of the penalty"""
 
@@ -22,10 +22,12 @@ class CompartmentEqualityConstraint(object):
         self.parameter = parameter
         """Index of the parameter"""
 
-        self.range = range
-        """The range the constraint is applied on"""
+        self.erange = erange
+        """The range on the e matrix axis the constraint is applied on"""
+
+        self.crange = crange
+        """The range on the c matrix axis the constraint is applied on"""
 
     def calculate(self, e_matrix, parameter):
         p = parameter[self.parameter].value
-        range = e_matrix[self.range[0]:self.range[1], :]
-        return self.weight * (p * np.sum(range[self.i] - range[self.j]))
+        return self.weight * (p * np.sum(e_matrix[self.i] - e_matrix[self.j]))

@@ -46,7 +46,10 @@ class SeparableModel(object):
 
     def retrieve_e_matrix(self, parameter, data, *args, **kwargs):
         c_matrix = self.c_matrix(parameter, *args, **kwargs)
+        return self.retrieve_e_matrix_from_c(c_matrix, data)
 
+
+    def retrieve_e_matrix_from_c(self, c_matrix, data):
         islist = isinstance(data, list)
 
         dim0 = len(c_matrix)
