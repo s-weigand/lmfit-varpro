@@ -37,17 +37,16 @@ class SeparableModel(object):
             res = np.random.normal(res, std_dev)
         return res
 
-    def fit(self, initial_parameter, constraints, *args, **kwargs):
+    def fit(self, initial_parameter, constraints, nnls, *args, **kwargs):
         result = SeparableModelResult(self, initial_parameter,
                                       equality_constraints=constraints,
-                                      *args, **kwargs)
+                                      nnls=nnls, *args, **kwargs)
         result.fit(initial_parameter, *args, **kwargs)
         return result
 
     def retrieve_e_matrix(self, parameter, data, *args, **kwargs):
         c_matrix = self.c_matrix(parameter, *args, **kwargs)
         return self.retrieve_e_matrix_from_c(c_matrix, data)
-
 
     def retrieve_e_matrix_from_c(self, c_matrix, data):
         islist = isinstance(data, list)

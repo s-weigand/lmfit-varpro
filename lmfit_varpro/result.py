@@ -1,4 +1,5 @@
 from lmfit import Minimizer
+from scipy.optimize import nnls
 import numpy as np
 
 from .util import dot
@@ -7,9 +8,10 @@ from .qr_decomposition import qr_residual
 
 class SeparableModelResult(Minimizer):
 
-    def __init__(self, model, initial_parameter,
+    def __init__(self, model, initial_parameter, nnls=False,
                  equality_constraints=[], *args, **kwargs):
         self.model = model
+        self.nnls = nnls
         self.equality_constraints = equality_constraints
         super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
@@ -50,8 +52,15 @@ class SeparableModelResult(Minimizer):
     # @profile
     def _residual(self, parameter, *args, **kwargs):
 
-        residuals = np.concatenate(list(self._all_residuals(parameter, *args,
-                                                            **kwargs)))
+        if self.nnls:
+            residuals = np.concatenate(list(self._all_residuals_nnls(parameter,
+                                                                     *args,
+                                                                     **kwargs))
+                                       )
+        else:
+            residuals = np.concatenate(list(self._all_residuals(parameter,
+                                                                *args,
+                                                                **kwargs)))
         return residuals
 
     def _all_residuals(self, parameter, *args, **kwargs):
@@ -60,7 +69,7 @@ class SeparableModelResult(Minimizer):
         c_matrix_group = self.model.c_matrix(parameter,
                                              *args, **kwargs)
         for data, c_mat in iter(data_group, c_matrix_group):
-            res = self._calculate_residual(data, c_mat)
+            res = self._calculate_residual_qr(data, c_mat)
             yield(res)
         if len(self.equality_constraints) is not 0:
             for constraint in self.equality_constraints:
@@ -73,8 +82,29 @@ class SeparableModelResult(Minimizer):
                 e_matrix = self.model.retrieve_e_matrix_for_c(c, data)
                 yield constraint.calculate(e_matrix, parameter)
 
-    def _calculate_residual(self, data, c_matrix):
+    def _calculate_residual_qr(self, data, c_matrix):
         return qr_residual(c_matrix, data)
+
+    def _all_residuals_nnls(self, parameter, *args, **kwargs):
+
+        data_group = self.model.data(**kwargs)
+        c_matrix_group = self.model.c_matrix(parameter,
+                                             *args, **kwargs)
+        e_matrix = []
+
+        for data, c_mat in iter(data_group, c_matrix_group):
+            e = self._calculate_e_nnls(data, c_mat)
+            yield np.dot(c_mat, e) - data
+            e_matrix.append(e)
+
+        if len(self.equality_constraints) is not 0:
+            for constraint in self.equality_constraints:
+                emin = constraint.erange[0]
+                emax = constraint.crange[1]
+                yield constraint.calculate(e_matrix[emin: emax])
+
+    def _calculate_e_nnls(self, data, c_matrix):
+        result, _ = nnls(c_matrix, data)
 
 
 def iter(data, c_matrix):
