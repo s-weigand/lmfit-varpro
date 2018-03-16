@@ -94,6 +94,7 @@ class SeparableModelResult(Minimizer):
 
         for data, c_mat in iter(data_group, c_matrix_group):
             e = self._calculate_e_nnls(data, c_mat)
+
             yield np.dot(c_mat, e) - data
             e_matrix.append(e)
 
@@ -105,6 +106,7 @@ class SeparableModelResult(Minimizer):
 
     def _calculate_e_nnls(self, data, c_matrix):
         result, _ = nnls(c_matrix, data)
+        return result
 
 
 def iter(data, c_matrix):
