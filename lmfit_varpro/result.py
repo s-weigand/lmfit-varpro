@@ -16,7 +16,8 @@ class SeparableModelResult(Minimizer):
         super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
                                                    fcn_args=args,
-                                                   fcn_kws=kwargs)
+                                                   fcn_kws=kwargs,
+                                                   )
 
     def fit(self, *args, **kwargs):
         verbose = kwargs['verbose'] if 'verbose' in kwargs else 2
