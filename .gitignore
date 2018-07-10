@@ -143,3 +143,17 @@ _summary.ps
 
 
 .Rproj.user
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+coverage_*.xml
+htmlcov_*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+.pytest_cache/
