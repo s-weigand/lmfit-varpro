@@ -7,7 +7,8 @@ import numpy as np
 class TestSimpleKinetic(TestCase):
 
     def assertEpsilon(self, number, value, epsilon):
-        self.assertTrue(abs(number - value) < epsilon, msg='wrong number')
+        self.assertTrue(abs(number - value) < epsilon,
+                        msg='Want: {} Have: {}'.format(number, value))
 
     def test_one_compartment_decay(self):
 
