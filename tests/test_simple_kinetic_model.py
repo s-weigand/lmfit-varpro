@@ -1,3 +1,4 @@
+import math
 from unittest import TestCase
 from lmfit_varpro import SeparableModel
 from lmfit import Parameters
