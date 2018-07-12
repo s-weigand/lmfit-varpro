@@ -6,7 +6,8 @@ import numpy as np
 
 class TestSimpleKinetic(TestCase):
 
-    def assertEpsilon(self, number, value, epsilon):
+    def assertEpsilon(self, number, value):
+        epsilon = math.floor(math.log10(abs(0.2))) - 3
         self.assertTrue(abs(number - value) < epsilon,
                         msg='Want: {} Have: {}'.format(number, value))
 
@@ -44,11 +45,10 @@ class TestSimpleKinetic(TestCase):
                                                             "data": data})
         for i in range(len(params)):
             self.assertEpsilon(params[i],
-                               result.best_fit_parameter["p{}".format(i)]
-                               .value, 1e-6)
+                               result.best_fit_parameter["p{}".format(i)])
         amps = result.e_matrix(data, **{"times": times})
         print(amps)
-        self.assertEpsilon(amps, [1.0], 1e-6)
+        self.assertEpsilon(amps, [1.0])
 
     def test_two_compartment_decay(self):
 
@@ -86,13 +86,12 @@ class TestSimpleKinetic(TestCase):
         for i in range(len(params)):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
-                               .value,
-                               1e-6)
+                               .value)
         amps = result.e_matrix(data, **{"times": times})[0]
         print(amps)
         want = [1.0, 2.0]
         for i in range(len(want)):
-            self.assertEpsilon(amps[i], want[i], 1e-6)
+            self.assertEpsilon(amps[i], want[i])
 
     def test_multi_compartment_multi_channel_decay(self):
 
@@ -151,5 +150,4 @@ class TestSimpleKinetic(TestCase):
         wanted_params = [.006667, 0.00333, 0.00035, 0.0303, 0.000909]
         for i in range(len(wanted_params)):
             self.assertEpsilon(wanted_params[i],
-                               result.best_fit_parameter["p{}".format(i)],
-                               1e-6)
+                               result.best_fit_parameter["p{}".format(i)])
