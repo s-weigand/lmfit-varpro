@@ -67,11 +67,11 @@ on_finish:
   # current and having a cache at all.
   # NB: This is done only `on_success` since the cache in uploaded only on
   # success anyway.
-  - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -mtime +360 -delete
-  - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -size +10M -delete
-  - C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -empty -delete
-  - C:\cygwin\bin\find "C:\projects\lmfit-varpro\.tox" -type f -mtime +360 -delete
-  - C:\cygwin\bin\find "C:\projects\lmfit-varpro\.tox" -empty -delete
+  - if exist "%LOCALAPPDATA%\pip" C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -mtime +360 -delete
+  - if exist "%LOCALAPPDATA%\pip" C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -type f -size +10M -delete
+  - if exist "%LOCALAPPDATA%\pip" C:\cygwin\bin\find "%LOCALAPPDATA%\pip" -empty -delete
+  - if exist "C:\projects\lmfit-varpro\.tox" C:\cygwin\bin\find "C:\projects\lmfit-varpro\.tox" -type f -mtime +360 -delete
+  - if exist "C:\projects\lmfit-varpro\.tox" C:\cygwin\bin\find "C:\projects\lmfit-varpro\.tox" -empty -delete
   # Show size of cache
-  - C:\cygwin\bin\du -hs "%LOCALAPPDATA%\pip\Cache"
-  - C:\cygwin\bin\du -hs "C:\projects\lmfit-varpro\.tox"
+  - if exist "%LOCALAPPDATA%\pip\Cache" C:\cygwin\bin\du -hs "%LOCALAPPDATA%\pip\Cache"
+  - if exist "C:\projects\lmfit-varpro\.tox" C:\cygwin\bin\du -hs "C:\projects\lmfit-varpro\.tox"
