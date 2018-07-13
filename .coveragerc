@@ -1,9 +1,8 @@
 [run]
 branch = True
-include = lmfit-varpro/*
+include = lmfit_varpro/*
           tests/*
 omit = setup.py
-       lmfit-varpro/__init__.py
        tests/__init__.py
 
 [report]

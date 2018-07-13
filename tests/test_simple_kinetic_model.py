@@ -8,9 +8,10 @@ import numpy as np
 class TestSimpleKinetic(TestCase):
 
     def assertEpsilon(self, number, value):
-        epsilon = math.floor(math.log10(abs(0.2))) - 3
+        epsilon = 10**(math.floor(math.log10(abs(number))) - 3)
         self.assertTrue(abs(number - value) < epsilon,
-                        msg='Want: {} Have: {}'.format(number, value))
+                        msg='Want: {} Have: {} with epsilon {}'
+                            ''.format(number, value, epsilon))
 
     def test_one_compartment_decay(self):
 
@@ -46,7 +47,8 @@ class TestSimpleKinetic(TestCase):
                                                             "data": data})
         for i in range(len(params)):
             self.assertEpsilon(params[i],
-                               result.best_fit_parameter["p{}".format(i)])
+                               result.best_fit_parameter["p{}".format(i)]
+                               .value)
         amps = result.e_matrix(data, **{"times": times})
         print(amps)
         self.assertEpsilon(amps, [1.0])
@@ -151,4 +153,5 @@ class TestSimpleKinetic(TestCase):
         wanted_params = [.006667, 0.00333, 0.00035, 0.0303, 0.000909]
         for i in range(len(wanted_params)):
             self.assertEpsilon(wanted_params[i],
-                               result.best_fit_parameter["p{}".format(i)])
+                               result.best_fit_parameter["p{}".format(i)]
+                               .value)
