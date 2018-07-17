@@ -8,8 +8,12 @@ from .qr_decomposition import qr_residual
 
 class SeparableModelResult(Minimizer):
 
-    def __init__(self, model, initial_parameter, nnls,
-                 equality_constraints=[], *args, **kwargs):
+    def __init__(self,
+                 model,
+                 initial_parameter,
+                 nnls,
+                 equality_constraints,
+                 *args, **kwargs):
         self._model = model
         self.nnls = nnls
         self.equality_constraints = equality_constraints
