@@ -10,7 +10,7 @@ class SeparableModelResult(Minimizer):
 
     def __init__(self, model, initial_parameter, nnls=False,
                  equality_constraints=[], *args, **kwargs):
-        self.model = model
+        self._model = model
         self.nnls = nnls
         self.equality_constraints = equality_constraints
         super(SeparableModelResult, self).__init__(self._residual,
@@ -18,6 +18,9 @@ class SeparableModelResult(Minimizer):
                                                    fcn_args=args,
                                                    fcn_kws=kwargs,
                                                    )
+
+    def get_model(self):
+        return self._model
 
     def fit(self, *args, **kwargs):
         verbose = kwargs['verbose'] if 'verbose' in kwargs else 2
@@ -29,11 +32,11 @@ class SeparableModelResult(Minimizer):
         self.best_fit_parameter = res.params
 
     def e_matrix(self, *args, **kwargs):
-        return self.model.retrieve_e_matrix(self.best_fit_parameter,
-                                            *args, **kwargs)
+        return self._model.retrieve_e_matrix(self.best_fit_parameter,
+                                             *args, **kwargs)
 
     def c_matrix(self, *args, **kwargs):
-        return self.model.c_matrix(self.best_fit_parameter, *args, **kwargs)
+        return self._model.c_matrix(self.best_fit_parameter, *args, **kwargs)
 
     def eval(self, *args, **kwargs):
         e = self.e_matrix(*args, **kwargs)
@@ -66,9 +69,9 @@ class SeparableModelResult(Minimizer):
 
     def _all_residuals(self, parameter, *args, **kwargs):
 
-        data_group = self.model.data(**kwargs)
-        c_matrix_group = self.model.c_matrix(parameter,
-                                             *args, **kwargs)
+        data_group = self._model.data(**kwargs)
+        c_matrix_group = self._model.c_matrix(parameter,
+                                              *args, **kwargs)
         for data, c_mat in iter(data_group, c_matrix_group):
             res = self._calculate_residual_qr(data, c_mat)
             yield(res)
@@ -80,7 +83,7 @@ class SeparableModelResult(Minimizer):
                 cmax = constraint.erange[1]
                 c = [c[cmin:cmax, :] for c in c_matrix_group if emin <=
                      c_matrix_group.index(c) <= emax]
-                e_matrix = self.model.retrieve_e_matrix_for_c(c, data)
+                e_matrix = self._model.retrieve_e_matrix_for_c(c, data)
                 yield constraint.calculate(e_matrix, parameter)
 
     def _calculate_residual_qr(self, data, c_matrix):
@@ -88,9 +91,9 @@ class SeparableModelResult(Minimizer):
 
     def _all_residuals_nnls(self, parameter, *args, **kwargs):
 
-        data_group = self.model.data(**kwargs)
-        c_matrix_group = self.model.c_matrix(parameter,
-                                             *args, **kwargs)
+        data_group = self._model.data(**kwargs)
+        c_matrix_group = self._model.c_matrix(parameter,
+                                              *args, **kwargs)
         e_matrix = []
 
         for data, c_mat in iter(data_group, c_matrix_group):
