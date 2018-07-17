@@ -4,6 +4,7 @@ from lmfit_varpro import SeparableModel
 from lmfit import Parameters
 import numpy as np
 
+
 class OneCompartmentDecay(SeparableModel):
 
     def data(self, **kwargs):
