@@ -10,19 +10,11 @@ class OneCompartmentDecay(SeparableModel):
         data = [kwargs['data'][0, :]]
         return data
 
-<<<<<<< HEAD:lmfit_varpro/test/test_simple_kinetic_model.py
     def c_matrix(self, parameter, *args, **kwargs):
         parameter = parameter.valuesdict()
         kinpar = np.asarray([parameter["p0"]])
         c = np.exp(np.outer(np.asarray(kwargs['times']), -kinpar))
         return [c]
-=======
-    def assertEpsilon(self, number, value):
-        epsilon = 10**(math.floor(math.log10(abs(number))) - 3)
-        self.assertTrue(abs(number - value) < epsilon,
-                        msg='Want: {} Have: {} with epsilon {}'
-                            ''.format(number, value, epsilon))
->>>>>>> c78b3fe6dcadcbb75dae0db994e48f46d1a2ea08:tests/test_simple_kinetic_model.py
 
     def e_matrix(self, parameter, **kwargs):
         return np.asarray([[1.0]])
@@ -79,8 +71,11 @@ class MultiChannelMultiCompartmentDecay(SeparableModel):
 
 class TestSimpleKinetic(TestCase):
 
-    def assertEpsilon(self, number, value, epsilon):
-        self.assertTrue(abs(number - value) < epsilon, msg='wrong number')
+    def assertEpsilon(self, number, value):
+        epsilon = 10**(math.floor(math.log10(abs(number))) - 3)
+        self.assertTrue(abs(number - value) < epsilon,
+                        msg='Want: {} Have: {} with epsilon {}'
+                            ''.format(number, value, epsilon))
 
     def test_one_compartment_decay(self):
 
@@ -101,18 +96,10 @@ class TestSimpleKinetic(TestCase):
                                                             "data": data})
         for i in range(len(params)):
             self.assertEpsilon(params[i],
-                               result.best_fit_parameter["p{}".format(i)]
-<<<<<<< HEAD:lmfit_varpro/test/test_simple_kinetic_model.py
-                               .value, 1e-6)
+                               result.best_fit_parameter["p{}".format(i)].value)
         amps = result.e_matrix(data, **{"times": times, "data": data})
         print(amps)
-        self.assertEpsilon(amps[0], 1.0, 1e-6)
-=======
-                               .value)
-        amps = result.e_matrix(data, **{"times": times})
-        print(amps)
-        self.assertEpsilon(amps, [1.0])
->>>>>>> c78b3fe6dcadcbb75dae0db994e48f46d1a2ea08:tests/test_simple_kinetic_model.py
+        self.assertEpsilon(amps[0], 1.0)
 
     def test_two_compartment_decay(self):
 
@@ -136,14 +123,8 @@ class TestSimpleKinetic(TestCase):
         for i in range(len(params)):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
-<<<<<<< HEAD:lmfit_varpro/test/test_simple_kinetic_model.py
-                               .value,
-                               1e-6)
-        amps = result.e_matrix(data, **{"times": times, "data": data})[0]
-=======
                                .value)
-        amps = result.e_matrix(data, **{"times": times})[0]
->>>>>>> c78b3fe6dcadcbb75dae0db994e48f46d1a2ea08:tests/test_simple_kinetic_model.py
+        amps = result.e_matrix(data, **{"times": times, "data": data})[0]
         print(amps)
         want = [1.0, 2.0]
         for i in range(len(want)):
