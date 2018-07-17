@@ -28,9 +28,9 @@ class SeparableModelResult(Minimizer):
 
         self.best_fit_parameter = res.params
 
-    def e_matrix(self, data, *args, **kwargs):
+    def e_matrix(self, *args, **kwargs):
         return self.model.retrieve_e_matrix(self.best_fit_parameter,
-                                            data, *args, **kwargs)
+                                            *args, **kwargs)
 
     def c_matrix(self, *args, **kwargs):
         return self.model.c_matrix(self.best_fit_parameter, *args, **kwargs)

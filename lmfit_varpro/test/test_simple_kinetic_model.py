@@ -3,6 +3,70 @@ from lmfit_varpro import SeparableModel
 from lmfit import Parameters
 import numpy as np
 
+class OneCompartmentDecay(SeparableModel):
+
+    def data(self, **kwargs):
+        data = [kwargs['data'][0, :]]
+        return data
+
+    def c_matrix(self, parameter, *args, **kwargs):
+        parameter = parameter.valuesdict()
+        kinpar = np.asarray([parameter["p0"]])
+        c = np.exp(np.outer(np.asarray(kwargs['times']), -kinpar))
+        return [c]
+
+    def e_matrix(self, parameter, **kwargs):
+        return np.asarray([[1.0]])
+
+
+class TwoComparmentDecay(SeparableModel):
+
+    def data(self, **kwargs):
+        data = [kwargs['data'][0, :]]
+        return data
+
+    def c_matrix(self, parameter, *args, **kwargs):
+        kinpar = np.asarray([parameter["p0"], parameter["p1"]])
+        c = np.exp(np.outer(kwargs['times'], -kinpar))
+        return [c]
+
+    def e_matrix(self, parameter, **kwargs):
+        return np.asarray([[1.0, 2.0]])
+
+
+class MultiChannelMultiCompartmentDecay(SeparableModel):
+
+    wavenum = np.asarray(np.arange(12820, 15120, 4.6))
+
+    def data(self, **kwargs):
+        data = [kwargs['data'][i, :] for i in
+                range(self.wavenum.shape[0])]
+        return data
+
+    def c_matrix(self, parameter, *args, **kwargs):
+        kinpar = np.asarray([parameter["p{}".format(i)] for i in
+                             range(len((parameter)))])
+        c = np.exp(np.outer(kwargs['times'], -kinpar))
+        return [c for _ in range(self.wavenum.shape[0])]
+
+    def e_matrix(self, parameter, **kwargs):
+        location = np.asarray(
+            [14705, 13513, 14492, 14388, 14184, 13986])
+        delta = np.asarray([400, 1000, 300, 200, 350, 330])
+        amp = np.asarray([1, 0.1, 10, 100, 1000, 10000])
+
+        E = np.empty((self.wavenum.shape[0], location.shape[0]),
+                     dtype=np.float64,
+                     order="F")
+
+        for i in range(location.size):
+            E[:, i] = amp[i] * np.exp(
+                -np.log(2) * np.square(
+                    2 * (self.wavenum - location[i])/delta[i]
+                )
+            )
+        return E
+
 
 class TestSimpleKinetic(TestCase):
 
@@ -10,21 +74,6 @@ class TestSimpleKinetic(TestCase):
         self.assertTrue(abs(number - value) < epsilon, msg='wrong number')
 
     def test_one_compartment_decay(self):
-
-        class OneCompartmentDecay(SeparableModel):
-
-            def data(self, **kwargs):
-                data = [kwargs['data'][0, :]]
-                return data
-
-            def c_matrix(self, parameter, *args, **kwargs):
-                parameter = parameter.valuesdict()
-                kinpar = np.asarray([parameter["p0"]])
-                c = np.exp(np.outer(np.asarray(kwargs['times']), -kinpar))
-                return [c]
-
-            def e_matrix(self, parameter, **kwargs):
-                return np.asarray([[1.0]])
 
         model = OneCompartmentDecay()
         times = np.asarray(np.arange(0, 1000, 1.5))
@@ -45,25 +94,11 @@ class TestSimpleKinetic(TestCase):
             self.assertEpsilon(params[i],
                                result.best_fit_parameter["p{}".format(i)]
                                .value, 1e-6)
-        amps = result.e_matrix(data, **{"times": times})
+        amps = result.e_matrix(data, **{"times": times, "data": data})
         print(amps)
-        self.assertEpsilon(amps, [1.0], 1e-6)
+        self.assertEpsilon(amps[0], 1.0, 1e-6)
 
     def test_two_compartment_decay(self):
-
-        class TwoComparmentDecay(SeparableModel):
-
-            def data(self, **kwargs):
-                data = [kwargs['data'][0, :]]
-                return data
-
-            def c_matrix(self, parameter, **kwargs):
-                kinpar = np.asarray([parameter["p0"], parameter["p1"]])
-                c = np.exp(np.outer(kwargs['times'], -kinpar))
-                return [c]
-
-            def e_matrix(self, parameter, **kwargs):
-                return np.asarray([[1.0, 2.0]])
 
         model = TwoComparmentDecay()
         times = np.asarray(np.arange(0, 1500, 1.5))
@@ -87,46 +122,13 @@ class TestSimpleKinetic(TestCase):
                                result.best_fit_parameter["p{}".format(i)]
                                .value,
                                1e-6)
-        amps = result.e_matrix(data, **{"times": times})[0]
+        amps = result.e_matrix(data, **{"times": times, "data": data})[0]
         print(amps)
         want = [1.0, 2.0]
         for i in range(len(want)):
             self.assertEpsilon(amps[i], want[i], 1e-6)
 
     def test_multi_compartment_multi_channel_decay(self):
-
-        class MultiChannelMultiCompartmentDecay(SeparableModel):
-
-            wavenum = np.asarray(np.arange(12820, 15120, 4.6))
-
-            def data(self, **kwargs):
-                data = [kwargs['data'][i, :] for i in
-                        range(self.wavenum.shape[0])]
-                return data
-
-            def c_matrix(self, parameter, **kwargs):
-                kinpar = np.asarray([parameter["p{}".format(i)] for i in
-                                     range(len((parameter)))])
-                c = np.exp(np.outer(kwargs['times'], -kinpar))
-                return [c for _ in range(self.wavenum.shape[0])]
-
-            def e_matrix(self, parameter, **kwargs):
-                location = np.asarray(
-                    [14705, 13513, 14492, 14388, 14184, 13986])
-                delta = np.asarray([400, 1000, 300, 200, 350, 330])
-                amp = np.asarray([1, 0.1, 10, 100, 1000, 10000])
-
-                E = np.empty((self.wavenum.shape[0], location.shape[0]),
-                             dtype=np.float64,
-                             order="F")
-
-                for i in range(location.size):
-                    E[:, i] = amp[i] * np.exp(
-                        -np.log(2) * np.square(
-                            2 * (self.wavenum - location[i])/delta[i]
-                        )
-                    )
-                return E
 
         model = MultiChannelMultiCompartmentDecay()
         times = np.asarray(np.arange(0, 1500, 1.5))

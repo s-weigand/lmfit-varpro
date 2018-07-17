@@ -44,23 +44,17 @@ class SeparableModel(object):
         result.fit(initial_parameter, *args, **kwargs)
         return result
 
-    def retrieve_e_matrix(self, parameter, data, *args, **kwargs):
+    def retrieve_e_matrix(self, parameter, *args, **kwargs):
         c_matrix = self.c_matrix(parameter, *args, **kwargs)
-        return self.retrieve_e_matrix_from_c(c_matrix, data)
+        return self.retrieve_e_matrix_from_c(c_matrix, **kwargs)
 
-    def retrieve_e_matrix_from_c(self, c_matrix, data):
-        islist = isinstance(data, list)
+    def retrieve_e_matrix_from_c(self, c_matrix, **kwargs):
+        data = self.data(**kwargs)
 
-        dim0 = len(c_matrix)
-        dim1 = c_matrix[0].shape[1]
+        e_matrix = []
+        for i, cmat in enumerate(c_matrix):
+            e_matrix.append(
+                qr_coefficents(cmat, data[i])[:cmat.shape[1]]
+            )
 
-        e = [] if islist else np.empty((dim0, dim1), np.float64)
-        for i in range(dim0):
-            c = c_matrix[i]
-            d = data[i] if islist else data[i, :]
-            if islist:
-                e.append(qr_coefficents(c, d))
-            else:
-                e[i, :] = qr_coefficents(c, d)[:dim1]
-
-        return e
+        return e_matrix
