@@ -157,3 +157,9 @@ class TestSimpleKinetic(TestCase):
             self.assertEpsilon(wanted_params[i],
                                result.best_fit_parameter["p{}".format(i)]
                                .value)
+
+        fitted = result.eval(**{"times": times, "data": data})
+
+        for i in range(fitted.shape[0]):
+            for j in range(fitted.shape[1]):
+                self.assertEpsilon(data[i, j], fitted[i, j])
