@@ -1,5 +1,0 @@
-[
-  "lmfit_varpro/test/test_simple_kinetic_model.py::TestSimpleKinetic::test_multi_compartment_multi_channel_decay",
-  "lmfit_varpro/test/test_simple_kinetic_model.py::TestSimpleKinetic::test_one_compartment_decay",
-  "lmfit_varpro/test/test_simple_kinetic_model.py::TestSimpleKinetic::test_two_compartment_decay"
-]
