@@ -24,7 +24,7 @@ matrix:
         - python -m pip install -U -r requirements_dev.txt
         - python setup.py install
       script:
-        - cd docs; make clean_all api_docs html linkcheck
+        - cd docs; make clean_all html linkcheck
       after_success:
         # this prevents the tests to upload stuff to coveralls.io
         - echo "done"
