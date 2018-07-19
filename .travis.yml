@@ -93,3 +93,8 @@ script: tox
 after_success:
     - coveralls
     - coverage erase
+
+notifications:
+  slack:
+    rooms:
+      - secure: "VidmiSSh3NBpBRsbe/Y4z02rEW/VNvW6IA47AgbVQkWM2D/f5p26vqequ4GHCDNJJzSUn5FX85eTj+p9nssXeVWJW3/KNp/NX0DTiylixj1Ep4myTfhWJwQlV56bq+7OZCjwRF290oTz4XECUQ6cL/+JeYH3E4GaAz3T9kxhpfZfP+dMJ8FIjQgaT5UorlcY3uFjx4FgScTyJPNyv0vzwpNc2KQVIWBVe3KBpnqkoYDGCjU4rVUa61HJ+agfYi0UelxyaRZKyMw1+EjTPZqpLBX2QKreAv7wWvbsVvmb+3jC/jlndVSN0HSG513nSUEAmd10I2YoWSPj5Ri8aMcBkJLVbt/Y8pedoHcAY8yam/Z5Pqh4lqvaP9tGJTLoIFzFkmrWnvtnx4bp+8QKSvK9SFhX2l90AoNKhwpYnAssMKgbtCeR3IJCEU99XpsT2DiKknvJKLQ+dcATv05b7XEnu5be46LllcykfoF6L64ZUyBPimlleGufdWNJzs/VWVHbVxZePlVpfX/Bp9sCq/uX1u3xosA1NWjiexw1R37u/fBTxELFuRR/jYOm7ON/YC/2yjHox05009WZy0IIzxwURpBH6YU0mQgXYFgTJGkNLN3418pXr0doN2LNgrfBUbAcD8jFVyx7aOJiGee3TP7/MKZRLhJcWs4uUKNWCqgtPbs="
