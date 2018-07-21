@@ -1,4 +1,5 @@
-from lmfit import Minimizer
+from lmfit import Minimizer, Parameters
+from lmfit.minimizer import MinimizerResult
 from scipy.optimize import nnls
 import numpy as np
 
@@ -17,6 +18,7 @@ class SeparableModelResult(Minimizer):
         self._model = model
         self.nnls = nnls
         self.equality_constraints = equality_constraints
+        self._result = None
         super(SeparableModelResult, self).__init__(self._residual,
                                                    initial_parameter,
                                                    fcn_args=args,
@@ -28,12 +30,10 @@ class SeparableModelResult(Minimizer):
 
     def fit(self, *args, **kwargs):
         verbose = kwargs['verbose'] if 'verbose' in kwargs else 2
-        res = self.minimize(method='least_squares',
-                            ftol=kwargs.get('ftol', 1e-10),
-                            gtol=kwargs.get('gtol', 1e-10),
-                            verbose=verbose)
-
-        self.best_fit_parameter = res.params
+        self._result = self.minimize(method='least_squares',
+                                     ftol=kwargs.get('ftol', 1e-10),
+                                     gtol=kwargs.get('gtol', 1e-10),
+                                     verbose=verbose)
 
     def e_matrix(self, *args, **kwargs):
         return self._model.retrieve_e_matrix(self.best_fit_parameter,
@@ -46,6 +46,16 @@ class SeparableModelResult(Minimizer):
         e = self.e_matrix(*args, **kwargs)
         c = self.c_matrix(*args, **kwargs)
         return dot(e, c)
+
+    @property
+    def best_fit_parameter(self) -> Parameters:
+        """The best-fit parameters resulting from the fit."""
+        return self._result.params
+
+    @property
+    def fitresult(self) -> MinimizerResult:
+        """The lmfit.MinimizerResult returned by the minimization."""
+        return self._result
 
     def final_residual(self, *args, **kwargs):
         return np.asarray([r for r in
