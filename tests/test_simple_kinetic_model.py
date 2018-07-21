@@ -138,7 +138,7 @@ def test_compartment_decay(compartment_decay_model):
     wanted_params = test_param_dict["wanted_params"]
 
     for index, wanted_param in enumerate(wanted_params):
-        fit_value = result.best_fit_parameter["p{}".format(index)].value
+        fit_value = result.fitresult.params["p{}".format(index)].value
         assert_epsilon(wanted_param, fit_value)
 
     if test_param_dict["result_is_e_matrix"]:

@@ -36,21 +36,16 @@ class SeparableModelResult(Minimizer):
                                      verbose=verbose)
 
     def e_matrix(self, *args, **kwargs):
-        return self._model.retrieve_e_matrix(self.best_fit_parameter,
+        return self._model.retrieve_e_matrix(self._result.params,
                                              *args, **kwargs)
 
     def c_matrix(self, *args, **kwargs):
-        return self._model.c_matrix(self.best_fit_parameter, *args, **kwargs)
+        return self._model.c_matrix(self._result.params, *args, **kwargs)
 
     def eval(self, *args, **kwargs):
         e = self.e_matrix(*args, **kwargs)
         c = self.c_matrix(*args, **kwargs)
         return dot(e, c)
-
-    @property
-    def best_fit_parameter(self) -> Parameters:
-        """The best-fit parameters resulting from the fit."""
-        return self._result.params
 
     @property
     def fitresult(self) -> MinimizerResult:
@@ -59,7 +54,7 @@ class SeparableModelResult(Minimizer):
 
     def final_residual(self, *args, **kwargs):
         return np.asarray([r for r in
-                           self._all_residuals(self.best_fit_parameter, *args,
+                           self._all_residuals(self._result.params, *args,
                                                **kwargs)])
 
     def final_residual_svd(self, *args, **kwargs):
