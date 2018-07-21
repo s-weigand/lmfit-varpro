@@ -1,4 +1,4 @@
-from lmfit import Minimizer, Parameters
+from lmfit import Minimizer
 from lmfit.minimizer import MinimizerResult
 from scipy.optimize import nnls
 import numpy as np
