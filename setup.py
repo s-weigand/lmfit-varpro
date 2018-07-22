@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="lmfit-varpro",
-    version="0.0.1",
+    version="0.0.3",
     description='A variable projection implementation for Python/lmfit.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -19,10 +19,14 @@ setuptools.setup(
     license='GPLv3',
     packages=setuptools.find_packages(),
     classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3',
 		'Programming Language :: Python :: 3.6',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Natural Language :: English',
         'Operating System :: OS Independent',
+        'Topic :: Scientific'
 	],
     install_requires=[
         'numpy',
