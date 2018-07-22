@@ -3,9 +3,9 @@
 [![Documentation Status](https://readthedocs.org/projects/lmfit-varpro/badge/?version=latest)](https://lmfit-varpro.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/glotaran/lmfit-varpro/badge.svg?branch=master)](https://coveralls.io/github/glotaran/lmfit-varpro?branch=master)
 
-<aside class="warning">
+<Warning>
 This project undergoes rapid development and is not production ready yet.
-</aside>
+</Warning>
 
 # lmfit-varpro
 Python-lmfit based implementation of variable projection
