@@ -32,8 +32,19 @@ matrix:
     # LINUX
     - python: "3.6"
       env: TOXENV=py36
+
     - python: "3.7-dev"  # 3.7 development branch
       env: TOXENV=py37
+      deploy:
+        provider: pypi
+        user: s-weigand
+        server: https://testpypi.python.org/pypi # Remove for deployment to official PyPi repo
+        password:
+          secure: "g8m1dymlpGkX23zp/97XsGesjQTzCMXpK4uUjeov1X9xCj/gPcIyF9sWFVKKGWOiVUeclA3JnHxdFtmlWslnIGLUPyBpCimXHPIOM9TCTCKG9oRH4vBKHc6Ho7qo52ojER+B81ip9o8pv7MI6vQkkBlZTniYlQRGNtnLxQjNugV4gbwIzguleKLc3Z0cR3KxQaFob7YyRO4cegCz6JMzmbfLBtJPboVPWNywPbeUGZT2Q+B4Gcm7p6Sw+BdrV8Vno6FZVM0wq+nNFBOOJ7FPj7Us/SeiU7mJoCAkgqQMaJyHvprU/nByKUFxeTxh/GQzBwWWfjgP6ParFocRw5rWGw4RI10GuW+stEZO0OSgweC5BIb5ZR65h2qOxVaG/uviJ1BRYtGPeWheYaR7Y1vVy/AWhzsY1X5K4EwaAcnYO8JzJfUjoHrpl5bcl0xoiJg3C7GOwBcuh6ZR2NGvZwyNYHZpgsEaJNyHkWv4dfqgdfFLFEmRMWM4ay/qH5bb6+OVZn30nCezLFkNXBv/N+SaAlWr5+67B2Y3ZMsiJgyHxyzeKWRKGP9mXXp58B+JzeKsEQmc1aQP9ZgsJChBYu/XYzWVHRUuxv4wGC8z1p+q6kuM/GZuiYGWeqKKpsDDdHq7JKL9ikc4+mz6p6z9WyoqtaKTDVft1C6ITmbgKZEstKI="
+        distributions: "sdist bdist_wheel" # Your distributions here
+        on:
+          tags: true
+          repo: s-weigand/lmfit-varpro
 
     # OSX
     - language: generic
