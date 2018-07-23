@@ -62,12 +62,12 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `lmfit_varpro` for local development.
+Ready to contribute? Here's how to set up `lmfit-varpro` for local development.
 
-1. Fork the `lmfit_varpro` repo on GitHub.
+1. Fork the `lmfit-varpro` repo on GitHub.
 2. Clone your fork locally::
 
-    $git clone git@github.com:your_name_here/lmfit_varpro.git
+    $git clone git@github.com:your_name_here/lmfit-varpro.git
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
@@ -81,18 +81,12 @@ Ready to contribute? Here's how to set up `lmfit_varpro` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox::
+5. When you're done making changes, check that your changes pass all tests
+(unit tests, codestyle tests and doc creation test)::
 
-    $flake8 lmfit_varpro tests
-    $python setup.py test
-
-..
-    Hopefully we can soon get all tests running with pytest and tox
     $tox
-    $py.test
 
-   To get flake8 and tox, just pip install them into your virtualenv.
+   To get all requirements run `pip install -r requirements_dev.txt` in your virtualenv.
 
 6. Commit your changes and push your branch to GitHub::
 
