@@ -238,7 +238,7 @@ if __name__ == "__main__":
     import lmfit_varpro
     PACKAGE_ROOT = lmfit_varpro.__path__[0]
     PROJECT_ROOT = os.path.split(PACKAGE_ROOT)[0]
-    module_imports = traverse_package(PACKAGE_ROOT, PROJECT_ROOT)
+    module_imports = traverse_package(PACKAGE_ROOT, PACKAGE_ROOT)
     child_modules = module_imports["child_modules"]
     child_packages = module_imports["child_packages"]
 
