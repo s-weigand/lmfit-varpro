@@ -4,9 +4,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/glotaran/lmfit-varpro/badge.svg?branch=master)](https://coveralls.io/github/glotaran/lmfit-varpro?branch=master)
 
 ### Warning
-This project is still in its Pre-Alpha phase and undergoes rapid development,
-thus it's not production ready yet since the API undergoes many changes.
-
+This project is still in its pre-alpha phase and undergoing rapid development,
+including changes to the core API, thus it is *not* production ready.
+### Additional warning for scientists
+The algorithms provided by this package still need to be validated and reviewed,
+pending the official release it should not be used in scientific publications.
 
 # lmfit-varpro
 Python-lmfit based implementation of variable projection
