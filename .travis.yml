@@ -88,7 +88,7 @@ install:
 
 script:
   - pip install .
-  - py.test --cov=lmfit_varpro --cov-config {toxinidir}/.coveragerc tests/
+  - py.test --cov=lmfit_varpro --cov-config .coveragerc tests/
   - pip freeze
 
 after_success:
