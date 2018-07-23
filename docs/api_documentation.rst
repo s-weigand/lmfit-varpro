@@ -15,8 +15,8 @@ The API Documentation for lmfit_varpro is automatically created from its docstri
 .. autosummary::
     :toctree: api
 
-    constraints
-    qr_decomposition
-    result
-    separable_model
-    util
+    lmfit_varpro.constraints
+    lmfit_varpro.qr_decomposition
+    lmfit_varpro.result
+    lmfit_varpro.separable_model
+    lmfit_varpro.util

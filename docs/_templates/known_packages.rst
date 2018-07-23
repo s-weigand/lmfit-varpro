@@ -6,7 +6,7 @@
     afterwards.
 
 {% set known_packages=[] %}
-{% set child_modules=['constraints', 'qr_decomposition', 'result', 'separable_model', 'util'] %}
+{% set child_modules=['lmfit_varpro.constraints', 'lmfit_varpro.qr_decomposition', 'lmfit_varpro.result', 'lmfit_varpro.separable_model', 'lmfit_varpro.util'] %}
 {% block module %}
 
 {% endblock %}
