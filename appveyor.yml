@@ -54,7 +54,7 @@ build: none
 test_script:
   # delete old .coverage file
   - coverage erase
-  - tox
+  - tox -e py36
 
 artifacts:
   - path: .coverage

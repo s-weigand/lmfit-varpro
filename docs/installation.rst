@@ -35,19 +35,19 @@ You can simply use `pip`_ to install it directly from the `Github repo`_.
 
 .. code-block:: console
 
-    $ pip install git+https://github.com/glotaran/lmfit_varpro.git
+    $ pip install git+https://github.com/glotaran/lmfit-varpro.git
 
 Or you can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/glotaran/lmfit_varpro
+    $ git clone git://github.com/glotaran/lmfit-varpro
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl  -OL https://github.com/glotaran/lmfit_varpro/tarball/master
+    $ curl  -OL https://github.com/glotaran/lmfit-varpro/tarball/master
 
 And once you have a copy of the source, you can install it with:
 
