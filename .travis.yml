@@ -33,6 +33,7 @@ matrix:
 
     # LINUX
     - python: "3.6"
+      env:
         - linux-py36
         - DEPLOY_ALL=true
 
