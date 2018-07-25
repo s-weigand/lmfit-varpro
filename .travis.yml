@@ -42,6 +42,7 @@ matrix:
 
     # OSX
     - language: generic
+      python: 3.6
       os: osx
       env: osx-py36
       before_install:
@@ -55,6 +56,7 @@ matrix:
         - python -m pip install -U pip>=9.0.1
 
     - language: generic
+      python: 3.7
       env: osx-py37
       os: osx
       before_install:
@@ -99,13 +101,28 @@ deploy:
   provider: pypi
   distributions: sdist bdist_wheel
   user: s-weigand
-  server: https://test.pypi.org/legacy/
-  skip_cleanup: true
+# if you just want to get used to workflow of publishing new versions
+# you can simply comment the lines between PRODUCTION and uncomment the
+# the ones between TESTING to use the PyPi testserver
+############# PRODUCTION ###############
   password:
-    secure: uH3d11n9UIiOw04S1hC+ihkKHgKCyj8JxOBaBCc3LYAAxFNNHYQx6+Wr8JDO7UpoKu0efI1/SKof1/6CKtA0Pk0jT+64PXBfYldneGFqF0et1zLEpVx1G557aiZNl4HSUhjYchlcuUyhank4V8qif7JI/n6CpB67xzQxE1ZYyxYs2DnhlH0Zm+yU8au/dJONTGet2Tqbue7GiJtj+AAi5jYMfT3dfR2Ny820/Go0LFI4JBlrHPoNqLfx1LuiPg1y/mKNSPd89aiU+mEBqyAP0L7G81tdIvyzR0Xo+ycMYpUjssHGurnvEgWVBsAbcKUvM71CGhQfFnaMLNu0rKDTNJ4NLFeo8yOoI5t8p3YJJm7ooMwZttliq9WgqF7eh/yrSEdOBWDRkBbFzFUKa6yOv4Y0VBwEqJRDCql1zKd6R0iDe7qXLxnaNgAPZ6RN11cW55ZVA0GUtDrLsBJIJFwa+9zvoG6Neg8NWB5EBA2yJuDQlKRnCB04wPFjsNUHzUjKiXWRe+54/t6lVwU4EHeBrdSUmz8sN83Dp/lu4LEW+bHjJlPqafjZkqr8HXW8dF146+N9e3jGv6tGAEnIjMa/LVZoEL2HEwKhVudLoh2/07NUAp5CG2Yev00EuQsKjhwoqNxw48TQ2+YPjGy9uXKMZY4peACYIGdvb4/NcaiyHZo=
+    secure: hxUebPQEG5q+Iz2cfXi7KedXNNBVNnmIRkYAGms+/DEB2C3ax3TUUsPYEcdCr4LdNT8TB10iHlSnuGcMhPMPAMQR82RjUtmAIJFudi1TPCvxsFXaKJIVlsVBBHM1qlfg5zIJ1v7QHmIzkyCNdNxE3doJd6XDUlDUFNC5fH+HPETYZC6e3rrXgLWyB2vqvmcpRRzBHfxkPiQ4cJs8LGbJiPwOyRl70/fAaHzWp9g3Jde4iyRCjGLsNGyhj9+hDZlgV/K6cDD2RQGmffWlllTLckDQUbLQbZjiM1vKnahSH0HifVTTXitVT/otYkx1KAjxGTbcRv8+QIL3MjMcFHjQlo2yAAkOS1aTBIdYKEeU6eKmgG3Cp1E9J43oplK8fjDMP5/eBMPtzs8ir0OYwtO15Np/nfPNyGNPsTKTXDJo8TheLXJUB+aUwbaHWYYeglNKiNC9+d7nostwXSCDkW1H0ZnI3GKOzjXQoXawLEQ8adst+mbzA1APJaH+7tJ+r/nwI7jFWen/MKYeczel9XVvmcmVlOD8hn5iXJkd5jVQMBfmUFE8g7Rdhg9htIYf/iHA33W/CcGCnw+NJTEzZqzqZ5R3JwNCVQSxlPbFpFvj+Vwx+M0KoFOIbTWs/hGZCY4mwe0GCuAKqUFPBO+4EXEsrqXSP6fnotUNZV3nkI4J0sE=
+############# PRODUCTION ###############
+
+############## TESTING #################
+#  server: https://test.pypi.org/legacy/
+#  password:
+#    secure: votHCGQUaFfMqTha9GkNLoB3oWlB3CA5VNtiFSKJUxIJAUj7wVCtKct9pl1XlNZ9R0IJ/XQARf0vIewP24GgzkYBHKDPXegLLm12RaL+c9qP9qsKOM/EsJbwdu1yo/BM9zaX8HoQ0XjCQPw/G1UCTLU04rlOFheAkpReOQhApiUD3pJop2bSO9PctWOajAdoCbeG4qP/wrcNNx4aj+CLLeNkPFlb9et9NDSBV8JlZnXA8wPugru3oBkgG7D6K45pVwXiNYMhvXAJc166p5OHGMazVzt0KZAl1V7bISdQwsRUF5daNHX7K6oO5vS82CaIYv4joyYMBIXo4PDmP9RweaM+2mF1Lms8KvR/UbKG6g7IhuQkcfMR0lqPmpdEBOOCuY4TqFeQ/DUEGVjefmwQ7X2UDlFG+MRZK932l9Q8Ma74/CtGAbHNvl0ejWhR7IUbhtcxduQ1SV+l9ZQBSqLD8kIGoGft9rtvh5K0zfOR7rIbxbzSmiCiGfcsbEqb+K7IZCN6X5NxSdMUelmgvospjMNYVv8S3fQNWOBY0yyoAOCpJp9VDrJCLjmrNfzkm6GIBFjAyPdSxNAk3YbXo8OsYgoMoUzcHFfXKiv9/RYo+4TZT27geqg8hIgnZycHjjZPts7kCmRFGPOvx511PIWyMa93em4OWfx99IbGqoSZJag=
+##############TESTING ##################
+  skip_cleanup: true
   on:
+############# PRODUCTION ###############
+    branch: master
+############# PRODUCTION ###############
     tags: true
-    repo: s-weigand/lmfit-varpro
+    repo: glotaran/lmfit-varpro
+    # there can only a maximum one test with DEPLOY_ALL=true, since PyPi will throw an error
+    # and make the fail if the file (mostly sdist) already exists on the server
     condition: "$DEPLOY_ALL = true"
 
 notifications:
