@@ -1,114 +1,87 @@
-# travis
 sudo: false
 language: python
 cache: pip
-
 matrix:
   fast_finish: true
   include:
-    - python: 3.6
-      env: TOXENV=flake8
-      before_install:
-        - echo "before_install"
-        - python -m pip install -U pip>=9.0.1
-        - pip install tox
-      script:
-        - tox
-      after_success:
-      # this prevents the tests to upload stuff to coveralls.io
-        - echo "done"
-
-    - python: 3.6
-      # taken from https://quick-sphinx-tutorial.readthedocs.io/en/latest/advanced.html
-      env: TOXENV=docs
-      before_install:
-        - echo "before_install"
-        - python -m pip install -U pip>=9.0.1
-        - pip install tox
-      script:
-        - tox
-      after_success:
-        # this prevents the tests to upload stuff to coveralls.io
-        - echo "done"
-
-    # LINUX
-    - python: "3.6"
-      env:
-        - linux-py36
-        - DEPLOY_ALL=true
-
-    - python: "3.7-dev"  # 3.7 development branch
-      env: linux-py37
-
-    # OSX
-    - language: generic
-      os: osx
-      env: osx-py36
-      before_install:
-        - echo "before_install"
-        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
-        - bash miniconda.sh -b -p $HOME/miniconda
-        - export PATH="$HOME/miniconda/bin:$PATH"
-        - conda update conda -y
-        - conda create -n py36 python=3.6 -y
-        - source activate py36
-        - python -m pip install -U pip>=9.0.1
-
-    - language: generic
-      env: osx-py37
-      os: osx
-      before_install:
-        - echo "before_install"
-        - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
-        - bash miniconda.sh -b -p $HOME/miniconda
-        - export PATH="$HOME/miniconda/bin:$PATH"
-        - conda update conda -y
-        - conda create -n py37 python=3.7 -y
-        - source activate py37
-        - python -m pip install -U pip>=9.0.1
-
-#    - python: 3.6
-#      env: win_coverage
-#      install:
-#        - pip install git+https://github.com/Robpol86/appveyor-artifacts.git coveralls
-#      script:
-#        - appveyor-artifacts -m download
-#      after_success:
-#        - coveralls
-#        - coverage erase
-
+  - python: 3.6
+    env: TOXENV=flake8
+    before_install:
+    - echo "before_install"
+    - python -m pip install -U pip>=9.0.1
+    - pip install tox
+    script:
+    - tox
+    after_success:
+    - echo "done"
+  - python: 3.6
+    env: TOXENV=docs
+    before_install:
+    - echo "before_install"
+    - python -m pip install -U pip>=9.0.1
+    - pip install tox
+    script:
+    - tox
+    after_success:
+    - echo "done"
+  - python: '3.6'
+    env:
+    - linux-py36
+    - DEPLOY_ALL=true
+  - python: 3.7-dev
+    env: linux-py37
+  - language: generic
+    os: osx
+    env: osx-py36
+    before_install:
+    - echo "before_install"
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+      -O miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - conda update conda -y
+    - conda create -n py36 python=3.6 -y
+    - source activate py36
+    - python -m pip install -U pip>=9.0.1
+  - language: generic
+    env: osx-py37
+    os: osx
+    before_install:
+    - echo "before_install"
+    - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+      -O miniconda.sh;
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - conda update conda -y
+    - conda create -n py37 python=3.7 -y
+    - source activate py37
+    - python -m pip install -U pip>=9.0.1
 before_install:
-  - echo "before_install"
-  - python -m pip install -U pip>=9.0.1
-
+- echo "before_install"
+- python -m pip install -U pip>=9.0.1
 install:
-  - pip install coveralls
-  - pip install -r requirements_dev.txt
-
+- pip install coveralls
+- pip install -r requirements_dev.txt
 script:
-  - pip install .
-  - py.test --cov=lmfit_varpro --cov-config .coveragerc tests/
-  - pip freeze
-
+- pip install .
+- py.test --cov=lmfit_varpro --cov-config .coveragerc tests/
+- pip freeze
 after_success:
-  - coveralls
-  - coverage erase
-
+- coveralls
+- coverage erase
 deploy:
-# full deploy with python 3.6, since the package is pure python
   provider: pypi
   distributions: sdist bdist_wheel
   user: s-weigand
   server: https://test.pypi.org/legacy/
   skip_cleanup: true
   password:
-    secure: uH3d11n9UIiOw04S1hC+ihkKHgKCyj8JxOBaBCc3LYAAxFNNHYQx6+Wr8JDO7UpoKu0efI1/SKof1/6CKtA0Pk0jT+64PXBfYldneGFqF0et1zLEpVx1G557aiZNl4HSUhjYchlcuUyhank4V8qif7JI/n6CpB67xzQxE1ZYyxYs2DnhlH0Zm+yU8au/dJONTGet2Tqbue7GiJtj+AAi5jYMfT3dfR2Ny820/Go0LFI4JBlrHPoNqLfx1LuiPg1y/mKNSPd89aiU+mEBqyAP0L7G81tdIvyzR0Xo+ycMYpUjssHGurnvEgWVBsAbcKUvM71CGhQfFnaMLNu0rKDTNJ4NLFeo8yOoI5t8p3YJJm7ooMwZttliq9WgqF7eh/yrSEdOBWDRkBbFzFUKa6yOv4Y0VBwEqJRDCql1zKd6R0iDe7qXLxnaNgAPZ6RN11cW55ZVA0GUtDrLsBJIJFwa+9zvoG6Neg8NWB5EBA2yJuDQlKRnCB04wPFjsNUHzUjKiXWRe+54/t6lVwU4EHeBrdSUmz8sN83Dp/lu4LEW+bHjJlPqafjZkqr8HXW8dF146+N9e3jGv6tGAEnIjMa/LVZoEL2HEwKhVudLoh2/07NUAp5CG2Yev00EuQsKjhwoqNxw48TQ2+YPjGy9uXKMZY4peACYIGdvb4/NcaiyHZo=
+    secure: GFkhTBhhSoBcMDE/AWqSK6LrjlKooKn+AhtuA4vP+zrQKAHVuc6UcndvcJVbTpGs8IRZwLCZerQuEKV+khOiOCjBq4z3+/valhCzr4sPcv5WH5XYFzm04+pahcthTpfEuWHhHdBJHQBZKCKOktPe8ExdbfaDLUQpqsAaLRCxRN4pqUD+DO2X7+j/aOGxTYT6LcG5ETcLyWYocgTanyR46pC6AZM5pCLSG/NX1RIe4uI3V/+HRa+DBSBqg5lWgqGHKHEMwH9X6SyqPFFNfD8Sbgwz07uyOIG+kkd2aO6t6K2svpB+cintSu84FKjdlXstGnVZeFfy5od8q+R/pY8hzT6C2iTanrxU+pUsUnwsuq3gIF3OxuYg6pugDiDyf+JiyijQVk9Ryx1o5MKiCkXjSMBoNV2JQODQmd50R2ZuSwcdVQGJzlczqrAEZ/Di+NlVhgR0wfqiUHjiTjLxiBwkRigpKab36zRL2jQm1L19eTNTOxrRSKQvLmTzgdA9egKwHdFukC7ivO7Q7St6s0CbjXBC6ujRGXh1E/VJKCCMCLf20WU+1N4icT4T05QOAw5D/LuVLdCmJpo6DKUowCwwV9p/ZSGQSTRGiZkQbA0rZcVxdW7OkzOpxKZn5rmKr40TeARQDw3Asm8vEhRcn6hc0tY5/Os3vzAXT7BZa5v3sE8=
   on:
     tags: true
     repo: s-weigand/lmfit-varpro
     condition: "$DEPLOY_ALL = true"
-
 notifications:
   slack:
     rooms:
-      - secure: "VidmiSSh3NBpBRsbe/Y4z02rEW/VNvW6IA47AgbVQkWM2D/f5p26vqequ4GHCDNJJzSUn5FX85eTj+p9nssXeVWJW3/KNp/NX0DTiylixj1Ep4myTfhWJwQlV56bq+7OZCjwRF290oTz4XECUQ6cL/+JeYH3E4GaAz3T9kxhpfZfP+dMJ8FIjQgaT5UorlcY3uFjx4FgScTyJPNyv0vzwpNc2KQVIWBVe3KBpnqkoYDGCjU4rVUa61HJ+agfYi0UelxyaRZKyMw1+EjTPZqpLBX2QKreAv7wWvbsVvmb+3jC/jlndVSN0HSG513nSUEAmd10I2YoWSPj5Ri8aMcBkJLVbt/Y8pedoHcAY8yam/Z5Pqh4lqvaP9tGJTLoIFzFkmrWnvtnx4bp+8QKSvK9SFhX2l90AoNKhwpYnAssMKgbtCeR3IJCEU99XpsT2DiKknvJKLQ+dcATv05b7XEnu5be46LllcykfoF6L64ZUyBPimlleGufdWNJzs/VWVHbVxZePlVpfX/Bp9sCq/uX1u3xosA1NWjiexw1R37u/fBTxELFuRR/jYOm7ON/YC/2yjHox05009WZy0IIzxwURpBH6YU0mQgXYFgTJGkNLN3418pXr0doN2LNgrfBUbAcD8jFVyx7aOJiGee3TP7/MKZRLhJcWs4uUKNWCqgtPbs="
+    - secure: VidmiSSh3NBpBRsbe/Y4z02rEW/VNvW6IA47AgbVQkWM2D/f5p26vqequ4GHCDNJJzSUn5FX85eTj+p9nssXeVWJW3/KNp/NX0DTiylixj1Ep4myTfhWJwQlV56bq+7OZCjwRF290oTz4XECUQ6cL/+JeYH3E4GaAz3T9kxhpfZfP+dMJ8FIjQgaT5UorlcY3uFjx4FgScTyJPNyv0vzwpNc2KQVIWBVe3KBpnqkoYDGCjU4rVUa61HJ+agfYi0UelxyaRZKyMw1+EjTPZqpLBX2QKreAv7wWvbsVvmb+3jC/jlndVSN0HSG513nSUEAmd10I2YoWSPj5Ri8aMcBkJLVbt/Y8pedoHcAY8yam/Z5Pqh4lqvaP9tGJTLoIFzFkmrWnvtnx4bp+8QKSvK9SFhX2l90AoNKhwpYnAssMKgbtCeR3IJCEU99XpsT2DiKknvJKLQ+dcATv05b7XEnu5be46LllcykfoF6L64ZUyBPimlleGufdWNJzs/VWVHbVxZePlVpfX/Bp9sCq/uX1u3xosA1NWjiexw1R37u/fBTxELFuRR/jYOm7ON/YC/2yjHox05009WZy0IIzxwURpBH6YU0mQgXYFgTJGkNLN3418pXr0doN2LNgrfBUbAcD8jFVyx7aOJiGee3TP7/MKZRLhJcWs4uUKNWCqgtPbs=
