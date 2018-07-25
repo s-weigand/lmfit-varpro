@@ -95,6 +95,22 @@ after_success:
   - coveralls
   - coverage erase
 
+
+deploy:
+# full deploy with python 3.6, since the package is pure python
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: s-weigand
+  server: https://test.pypi.org/legacy/
+  skip_cleanup: true
+  password:
+    secure: uH3d11n9UIiOw04S1hC+ihkKHgKCyj8JxOBaBCc3LYAAxFNNHYQx6+Wr8JDO7UpoKu0efI1/SKof1/6CKtA0Pk0jT+64PXBfYldneGFqF0et1zLEpVx1G557aiZNl4HSUhjYchlcuUyhank4V8qif7JI/n6CpB67xzQxE1ZYyxYs2DnhlH0Zm+yU8au/dJONTGet2Tqbue7GiJtj+AAi5jYMfT3dfR2Ny820/Go0LFI4JBlrHPoNqLfx1LuiPg1y/mKNSPd89aiU+mEBqyAP0L7G81tdIvyzR0Xo+ycMYpUjssHGurnvEgWVBsAbcKUvM71CGhQfFnaMLNu0rKDTNJ4NLFeo8yOoI5t8p3YJJm7ooMwZttliq9WgqF7eh/yrSEdOBWDRkBbFzFUKa6yOv4Y0VBwEqJRDCql1zKd6R0iDe7qXLxnaNgAPZ6RN11cW55ZVA0GUtDrLsBJIJFwa+9zvoG6Neg8NWB5EBA2yJuDQlKRnCB04wPFjsNUHzUjKiXWRe+54/t6lVwU4EHeBrdSUmz8sN83Dp/lu4LEW+bHjJlPqafjZkqr8HXW8dF146+N9e3jGv6tGAEnIjMa/LVZoEL2HEwKhVudLoh2/07NUAp5CG2Yev00EuQsKjhwoqNxw48TQ2+YPjGy9uXKMZY4peACYIGdvb4/NcaiyHZo=
+  on:
+    tags: true
+    repo: s-weigand/lmfit-varpro
+    python: 3.6
+
+
 notifications:
   slack:
     rooms:
