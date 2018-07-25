@@ -1,3 +1,4 @@
+[![latest release](https://pypip.in/version/lmfit-varpro/badge.svg)](https://pypi.org/project/lmfit-varpro/)
 [![Build Status](https://travis-ci.org/glotaran/lmfit-varpro.svg?branch=master)](https://travis-ci.org/glotaran/lmfit-varpro)
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/glotaran/lmfit-varpro?branch=master&svg=true)](https://ci.appveyor.com/project/jsnel/lmfit-varpro?branch=master)
 [![Documentation Status](https://readthedocs.org/projects/lmfit-varpro/badge/?version=latest)](https://lmfit-varpro.readthedocs.io/en/latest/?badge=latest)

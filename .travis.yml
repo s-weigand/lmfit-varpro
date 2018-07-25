@@ -33,7 +33,9 @@ matrix:
 
     # LINUX
     - python: "3.6"
-      env: linux-py36
+      env:
+        - linux-py36
+        - DEPLOY_ALL=true
 
     - python: "3.7-dev"  # 3.7 development branch
       env: linux-py37
@@ -42,8 +44,7 @@ matrix:
     - language: generic
       python: 3.6
       os: osx
-      env:
-        - osx-py36
+      env: osx-py36
       before_install:
         - echo "before_install"
         - wget https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh;
@@ -94,6 +95,35 @@ script:
 after_success:
   - coveralls
   - coverage erase
+
+deploy:
+# full deploy with python 3.6, since the package is pure python
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: s-weigand
+# if you just want to get used to workflow of publishing new versions
+# you can simply comment the lines between PRODUCTION and uncomment the
+# the ones between TESTING to use the PyPi testserver
+############# PRODUCTION ###############
+  password:
+    secure: hxUebPQEG5q+Iz2cfXi7KedXNNBVNnmIRkYAGms+/DEB2C3ax3TUUsPYEcdCr4LdNT8TB10iHlSnuGcMhPMPAMQR82RjUtmAIJFudi1TPCvxsFXaKJIVlsVBBHM1qlfg5zIJ1v7QHmIzkyCNdNxE3doJd6XDUlDUFNC5fH+HPETYZC6e3rrXgLWyB2vqvmcpRRzBHfxkPiQ4cJs8LGbJiPwOyRl70/fAaHzWp9g3Jde4iyRCjGLsNGyhj9+hDZlgV/K6cDD2RQGmffWlllTLckDQUbLQbZjiM1vKnahSH0HifVTTXitVT/otYkx1KAjxGTbcRv8+QIL3MjMcFHjQlo2yAAkOS1aTBIdYKEeU6eKmgG3Cp1E9J43oplK8fjDMP5/eBMPtzs8ir0OYwtO15Np/nfPNyGNPsTKTXDJo8TheLXJUB+aUwbaHWYYeglNKiNC9+d7nostwXSCDkW1H0ZnI3GKOzjXQoXawLEQ8adst+mbzA1APJaH+7tJ+r/nwI7jFWen/MKYeczel9XVvmcmVlOD8hn5iXJkd5jVQMBfmUFE8g7Rdhg9htIYf/iHA33W/CcGCnw+NJTEzZqzqZ5R3JwNCVQSxlPbFpFvj+Vwx+M0KoFOIbTWs/hGZCY4mwe0GCuAKqUFPBO+4EXEsrqXSP6fnotUNZV3nkI4J0sE=
+############# PRODUCTION ###############
+
+############## TESTING #################
+#  server: https://test.pypi.org/legacy/
+#  password:
+#    secure: votHCGQUaFfMqTha9GkNLoB3oWlB3CA5VNtiFSKJUxIJAUj7wVCtKct9pl1XlNZ9R0IJ/XQARf0vIewP24GgzkYBHKDPXegLLm12RaL+c9qP9qsKOM/EsJbwdu1yo/BM9zaX8HoQ0XjCQPw/G1UCTLU04rlOFheAkpReOQhApiUD3pJop2bSO9PctWOajAdoCbeG4qP/wrcNNx4aj+CLLeNkPFlb9et9NDSBV8JlZnXA8wPugru3oBkgG7D6K45pVwXiNYMhvXAJc166p5OHGMazVzt0KZAl1V7bISdQwsRUF5daNHX7K6oO5vS82CaIYv4joyYMBIXo4PDmP9RweaM+2mF1Lms8KvR/UbKG6g7IhuQkcfMR0lqPmpdEBOOCuY4TqFeQ/DUEGVjefmwQ7X2UDlFG+MRZK932l9Q8Ma74/CtGAbHNvl0ejWhR7IUbhtcxduQ1SV+l9ZQBSqLD8kIGoGft9rtvh5K0zfOR7rIbxbzSmiCiGfcsbEqb+K7IZCN6X5NxSdMUelmgvospjMNYVv8S3fQNWOBY0yyoAOCpJp9VDrJCLjmrNfzkm6GIBFjAyPdSxNAk3YbXo8OsYgoMoUzcHFfXKiv9/RYo+4TZT27geqg8hIgnZycHjjZPts7kCmRFGPOvx511PIWyMa93em4OWfx99IbGqoSZJag=
+##############TESTING ##################
+  skip_cleanup: true
+  on:
+############# PRODUCTION ###############
+    branch: master
+############# PRODUCTION ###############
+    tags: true
+    repo: glotaran/lmfit-varpro
+    # there can only a maximum one test with DEPLOY_ALL=true, since PyPi will throw an error
+    # and make the fail if the file (mostly sdist) already exists on the server
+    condition: "$DEPLOY_ALL = true"
 
 notifications:
   slack:
