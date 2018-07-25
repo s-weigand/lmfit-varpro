@@ -38,6 +38,7 @@ setuptools.setup(
     install_requires=[
         'numpy',
         'lmfit',
+        'scipy'
     ],
     test_suite='tests',
     tests_require=['pytest'],
