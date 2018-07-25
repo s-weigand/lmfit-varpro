@@ -1,20 +1,18 @@
 import setuptools
-from lmfit_varpro._version import get_versions
-
-VERSION = get_versions()['version']
-del get_versions
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+
+
 setuptools.setup(
     name="lmfit-varpro",
-    version=VERSION,
+    version="0.0.1",
     description='A variable projection implementation for Python/lmfit.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://github.com/glotaran/lmfit-varpro',
-    download_url = 'https://github.com/glotaran/lmfit-varpro/archive/{}.tar.gz'.format(VERSION),
+    download_url = 'https://github.com/glotaran/lmfit-varpro/tarball/master',
     keywords = ['alpha'],
     author='Joris Snellenburg, '
            'Joern Weissenborn',
@@ -37,8 +35,7 @@ setuptools.setup(
 	],
     install_requires=[
         'numpy',
-        'lmfit',
-        'scipy'
+        'lmfit'
     ],
     test_suite='tests',
     tests_require=['pytest'],
