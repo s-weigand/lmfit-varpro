@@ -1,5 +1,5 @@
-Welcome to glotaran's documentation!
-======================================
+Welcome to lmfit-varpro's documentation!
+========================================
 
 .. toctree::
     :maxdepth: 1

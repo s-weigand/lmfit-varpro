@@ -1,5 +1,5 @@
 =======
-Credits
+Authors
 =======
 
 Original Founder
